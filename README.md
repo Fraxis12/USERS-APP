@@ -151,8 +151,15 @@ mysql -u root -p < database.sql
 mysql -u root -p
 
 # Ejecutar los comandos del archivo database.sql
-CREATE DATABASE app_flask CHARACTER SET utf8mb4;
-USE app_flask;
+CREATE DATABASE IF NOT EXISTS app_flask CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE USER IF NOT EXISTS 'flask_user'@'localhost' IDENTIFIED BY '123456';
+
+GRANT ALL PRIVILEGES ON app_flask.* TO 'flask_user'@'localhost';
+
+FLUSH PRIVILEGES;
+
+EXIT;
 # ... (copiar el contenido de database.sql)
 ```
 
@@ -162,11 +169,11 @@ Edita `config/config.py` si es necesario:
 
 ```python
 # Valores por defecto (si MySQL está en localhost)
-MYSQL_HOST = 'localhost'
-MYSQL_USER = 'root'
-MYSQL_PASSWORD = ''
-MYSQL_DB = 'app_flask'
-MYSQL_PORT = 3306
+MYSQL_HOST = os.environ.get('MYSQL_HOST') or 'localhost'
+MYSQL_USER = os.environ.get('MYSQL_USER') or 'flask_user'
+MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD') or '123456'
+MYSQL_DB = os.environ.get('MYSQL_DB') or 'app_flask'
+MYSQL_PORT = int(os.environ.get('MYSQL_PORT') or 3306)
 ```
 
 ### 6. Ejecutar la aplicación
