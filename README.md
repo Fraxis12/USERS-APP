@@ -93,8 +93,9 @@ TAREA3/
 ## 🚀 Requisitos Previos
 
 - **Python 3.8+** instalado
-- **MySQL Server 8.0+** en ejecución
+- **MariaDB/MySQL Server 8.0+** en ejecución
 - **pip** (gestor de paquetes Python)
+- **Permisos de sudo** para iniciar MariaDB
 
 ### Verificar Python:
 ```bash
@@ -103,7 +104,7 @@ python --version
 python3 --version
 ```
 
-### Verificar MySQL:
+### Verificar MariaDB/MySQL:
 ```bash
 mysql --version
 ```
@@ -116,16 +117,10 @@ mysql --version
 cd /ruta/al/proyecto
 ```
 
-### 2. Crear entorno virtual
+### 2. Activar el entorno virtual
 
 ```bash
-# Linux/Mac
-python3 -m venv venv
 source venv/bin/activate
-
-# Windows
-python -m venv venv
-venv\Scripts\activate
 ```
 
 ### 3. Instalar dependencias
@@ -134,41 +129,72 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 4. Configurar base de datos
+### 4. Encender MariaDB
 
-#### Opción A: Usando script SQL
 ```bash
-# Linux/Mac
-mysql -u root -p < database.sql
-
-# Windows (asegúrate de estar en la carpeta del proyecto)
-mysql -u root -p < database.sql
+sudo systemctl start mariadb
 ```
 
-#### Opción B: Manualmente
-```bash
-# Conectarse a MySQL
-mysql -u root -p
+### 5. Crear la base de datos
 
-# Ejecutar los comandos del archivo database.sql
+```bash
+sudo mysql
+```
+
+Dentro de MariaDB, ejecuta:
+
+```sql
 CREATE DATABASE IF NOT EXISTS app_flask CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-CREATE USER IF NOT EXISTS 'flask_user'@'localhost' IDENTIFIED BY '123456';
-
-GRANT ALL PRIVILEGES ON app_flask.* TO 'flask_user'@'localhost';
-
-FLUSH PRIVILEGES;
-
 EXIT;
-# ... (copiar el contenido de database.sql)
 ```
 
-### 5. Configurar variables de entorno
+### 6. Crear usuario para la aplicación
 
-Edita `config/config.py` si es necesario:
+```bash
+sudo mysql
+```
+
+Dentro de MariaDB, ejecuta:
+
+```sql
+CREATE USER IF NOT EXISTS 'flask_user'@'localhost' IDENTIFIED BY '123456';
+GRANT ALL PRIVILEGES ON app_flask.* TO 'flask_user'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+```
+
+### 7. Cargar el archivo database.sql
+
+Desde la terminal, dentro de la carpeta del proyecto:
+
+```bash
+sudo mysql app_flask < database.sql
+```
+
+### 8. Verificar que las tablas existen
+
+```bash
+sudo mysql
+```
+
+Dentro de MariaDB, ejecuta:
+
+```sql
+USE app_flask;
+SHOW TABLES;
+EXIT;
+```
+
+Debe aparecer:
+- `usuarios`
+- `notas`
+
+### 9. Configurar config.py
+
+Verifica que en `config/config.py` estén estos valores:
 
 ```python
-# Valores por defecto (si MySQL está en localhost)
+# Base de datos MySQL
 MYSQL_HOST = os.environ.get('MYSQL_HOST') or 'localhost'
 MYSQL_USER = os.environ.get('MYSQL_USER') or 'flask_user'
 MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD') or '123456'
@@ -176,7 +202,7 @@ MYSQL_DB = os.environ.get('MYSQL_DB') or 'app_flask'
 MYSQL_PORT = int(os.environ.get('MYSQL_PORT') or 3306)
 ```
 
-### 6. Ejecutar la aplicación
+### 10. Ejecutar la aplicación
 
 ```bash
 python app.py
