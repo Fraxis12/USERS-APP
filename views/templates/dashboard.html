@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: var(--spacing-xl) 0;">
+    <div class="mb-lg">
+        <h1>Bienvenido, {{ usuario }}!</h1>
+        <p class="text-muted">Panel de control de usuario</p>
+    </div>
+    
+    <div class="grid grid-2">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">📝 Mis Notas</h3>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Accede a todas tus notas personales</p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('nota.mis_notas') }}" class="btn btn-primary">Ver Notas</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">➕ Nueva Nota</h3>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Crea una nueva nota ahora</p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('nota.crear_nota') }}" class="btn btn-success">Crear Nota</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">👤 Mi Perfil</h3>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Edita tu información personal</p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('usuario.mi_perfil') }}" class="btn btn-secondary">Ver Perfil</a>
+            </div>
+        </div>
+    </div>
+    
+    {% if rol == 'admin' %}
+    <hr style="margin: var(--spacing-2xl) 0; border: none; border-top: 2px solid var(--border-color);">
+    
+    <h2 class="mb-lg">Funciones de Administrador</h2>
+    
+    <div class="grid grid-2">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">👥 Gestionar Usuarios</h3>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Crea, edita y elimina usuarios</p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('usuario.panel_admin') }}" class="btn btn-primary">Panel Admin</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">📚 Todas las Notas</h3>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Visualiza notas de todos los usuarios</p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('nota.todas_notas') }}" class="btn btn-primary">Ver Notas</a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

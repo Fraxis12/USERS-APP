@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Aplicación de Notas{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% if session.get('usuario_id') %}
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-container">
+                <div class="navbar-brand">
+                    <span>📝</span>
+                    <a href="{% if session.get('rol') == 'admin' %}{{ url_for('usuario.panel_admin') }}{% else %}{{ url_for('main.dashboard') }}{% endif %}">Notas App</a>
+                </div>
+                
+                <ul class="navbar-menu">
+                    {% if session.get('rol') == 'admin' %}
+                    <li><a href="{{ url_for('usuario.panel_admin') }}">Panel Admin</a></li>
+                    <li><a href="{{ url_for('nota.todas_notas') }}">Todas las Notas</a></li>
+                    {% else %}
+                    <li><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('nota.mis_notas') }}">Mis Notas</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('nota.crear_nota') }}">+ Nueva Nota</a></li>
+                </ul>
+                
+                <div class="navbar-user">
+                    <div class="user-info">
+                        <span class="user-name">{{ session.get('nombre') }}</span>
+                        <span class="user-role">{{ session.get('rol') }}</span>
+                    </div>
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary btn-sm">Salir</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+    
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }}">
+                        {{ message }}
+                        <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </main>
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

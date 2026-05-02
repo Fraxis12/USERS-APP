@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Notas{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: var(--spacing-xl) 0;">
+    <div class="flex-between mb-lg">
+        <div>
+            <h1>Mis Notas</h1>
+            <p class="text-muted">Todas tus notas personales</p>
+        </div>
+        <a href="{{ url_for('nota.crear_nota') }}" class="btn btn-success">
+            + Nueva Nota
+        </a>
+    </div>
+    
+    <div class="grid grid-2">
+        {% for nota in notas %}
+        <div class="card">
+            <div class="card-header">
+                <div style="flex: 1;">
+                    <h4 class="card-title" style="margin: 0;">{{ nota.titulo }}</h4>
+                    <span class="text-muted" style="font-size: 0.85rem;">
+                        {{ nota.fecha_creacion_formateada }}
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p style="color: var(--text-secondary); max-height: 100px; overflow: hidden;">
+                    {{ nota.contenido[:100] }}{% if nota.contenido|length > 100 %}...{% endif %}
+                </p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('nota.ver_nota', nota_id=nota.id) }}" class="btn btn-secondary btn-sm">
+                    Ver
+                </a>
+                <a href="{{ url_for('nota.editar_nota', nota_id=nota.id) }}" class="btn btn-secondary btn-sm">
+                    Editar
+                </a>
+                <button 
+                    class="btn btn-danger btn-sm"
+                    onclick="if(confirmarEliminacion('¿Eliminar esta nota?')) {
+                        fetch('{{ url_for('nota.eliminar_nota', nota_id=nota.id) }}', { method: 'POST' })
+                        .then(r => r.json())
+                        .then(d => { 
+                            if(d.exito) location.reload(); 
+                            else mostrarAlerta(d.mensaje, 'danger');
+                        });
+                    }"
+                >
+                    Eliminar
+                </button>
+            </div>
+        </div>
+    {% else %}
+    <div class="card">
+        <div class="card-body text-center" style="padding: var(--spacing-2xl) 0;">
+            <p class="text-muted" style="font-size: 1.1rem; margin-bottom: var(--spacing-lg);">
+                Aún no tienes notas
+            </p>
+            <a href="{{ url_for('nota.crear_nota') }}" class="btn btn-success">
+                Crear tu primera nota
+            </a>
+        </div>
+    </div>
+        {% endfor %}
+</div>
+{% endblock %}

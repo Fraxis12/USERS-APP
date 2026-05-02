@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}{{ nota.titulo }}{% endblock %}
+
+{% block content %}
+<div class="container-md" style="padding: var(--spacing-xl) 0;">
+    <div class="mb-lg">
+        <a href="{{ url_for('nota.mis_notas') }}" style="color: var(--primary-color);">← Mis Notas</a>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <div style="flex: 1;">
+                <h1 class="card-title">{{ nota.titulo }}</h1>
+                <p class="text-muted" style="margin: 0;">
+                    Creada: {{ nota.get('fecha_creacion_formateada', nota.fecha_creacion) }}
+                </p>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            <div style="background-color: var(--secondary-light); padding: var(--spacing-lg); border-radius: 0.5rem; 
+                        line-height: 1.8; color: var(--text-primary); white-space: pre-wrap;">
+                {{ nota.contenido }}
+            </div>
+        </div>
+        
+        <div class="card-footer">
+            <a href="{{ url_for('nota.editar_nota', nota_id=nota.id) }}" class="btn btn-primary">
+                Editar
+            </a>
+            <button 
+                class="btn btn-danger"
+                onclick="if(confirmarEliminacion('¿Eliminar esta nota?')) {
+                    fetch('{{ url_for('nota.eliminar_nota', nota_id=nota.id) }}', { method: 'POST' })
+                    .then(r => r.json())
+                    .then(d => { 
+                        if(d.exito) window.location = '{{ url_for('nota.mis_notas') }}'; 
+                        else mostrarAlerta(d.mensaje, 'danger');
+                    });
+                }"
+            >
+                Eliminar
+            </button>
+            <a href="{{ url_for('nota.mis_notas') }}" class="btn btn-secondary">
+                Volver
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

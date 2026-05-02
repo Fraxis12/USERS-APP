@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Registro{% endblock %}
+
+{% block content %}
+<div class="container-sm">
+    <div class="flex-center" style="min-height: 100vh;">
+        <div style="width: 100%;">
+            <div class="text-center mb-lg">
+                <h1 style="font-size: 3rem; margin-bottom: 0;">📝</h1>
+                <h2>Crear Cuenta</h2>
+                <p class="text-muted">Únete a Notas App</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    {% if errores %}
+                    <div class="alert alert-danger">
+                        <strong>Errores en el registro:</strong>
+                        <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
+                            {% for error in errores %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+                    </div>
+                    {% endif %}
+                    
+                    <form method="POST" action="{{ url_for('auth.registro') }}">
+                        <div class="form-group">
+                            <label for="nombre">Nombre Completo</label>
+                            <input 
+                                type="text" 
+                                id="nombre" 
+                                name="nombre" 
+                                placeholder="Tu nombre"
+                                required
+                                autofocus
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Correo Electrónico</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                placeholder="correo@ejemplo.com"
+                                required
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="usuario">Usuario</label>
+                            <input 
+                                type="text" 
+                                id="usuario" 
+                                name="usuario" 
+                                placeholder="Tu usuario (3-20 caracteres)"
+                                required
+                            >
+                            <span class="form-text">Solo letras, números y guiones bajos</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contraseña">Contraseña</label>
+                            <input 
+                                type="password" 
+                                id="contraseña" 
+                                name="contraseña" 
+                                placeholder="Mínimo 6 caracteres"
+                                required
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirmar_contraseña">Confirmar Contraseña</label>
+                            <input 
+                                type="password" 
+                                id="confirmar_contraseña" 
+                                name="confirmar_contraseña" 
+                                placeholder="Confirma tu contraseña"
+                                required
+                            >
+                        </div>
+                        
+                        <hr style="margin: var(--spacing-lg) 0; border: none; border-top: 1px solid var(--border-color);">
+                        
+                        <h4 style="margin-bottom: var(--spacing-md);">¿Eres Administrador?</h4>
+                        <p class="text-muted" style="font-size: 0.9rem; margin-bottom: var(--spacing-md);">
+                            Si tienes un código de administrador, ingrésalo aquí (opcional)
+                        </p>
+                        
+                        <div class="form-group">
+                            <label for="codigo_admin">Código de Administrador</label>
+                            <input 
+                                type="password" 
+                                id="codigo_admin" 
+                                name="codigo_admin" 
+                                placeholder="Déjalo vacío si no eres admin"
+                            >
+                            <span class="form-text">
+                                Si ingresas el código correcto, te registrarás como administrador
+                            </span>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block">
+                            Crear Cuenta
+                        </button>
+                    </form>
+                    
+                    <hr style="margin: var(--spacing-lg) 0; border: none; border-top: 1px solid var(--border-color);">
+                    
+                    <p class="text-center">
+                        ¿Ya tienes cuenta? 
+                        <a href="{{ url_for('auth.login') }}" style="font-weight: 600;">Inicia sesión</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

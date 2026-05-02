@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Acceso Denegado{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: var(--spacing-2xl) 0;">
+    <div class="flex-center" style="min-height: calc(100vh - 100px);">
+        <div class="text-center">
+            <h1 style="font-size: 4rem; color: var(--danger-color); margin-bottom: var(--spacing-md);">403</h1>
+            <h2>Acceso Denegado</h2>
+            <p class="text-muted mb-lg">No tienes permiso para acceder a esta página</p>
+            
+            <a href="{% if session.get('rol') == 'admin' %}{{ url_for('usuario.panel_admin') }}{% else %}{{ url_for('main.dashboard') }}{% endif %}" class="btn btn-primary">
+                Volver al Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

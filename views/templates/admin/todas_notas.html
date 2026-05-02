@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Todas las Notas{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: var(--spacing-xl) 0;">
+    <div class="flex-between mb-lg">
+        <div>
+            <h1>Todas las Notas</h1>
+            <p class="text-muted">Notas de todos los usuarios</p>
+        </div>
+    </div>
+    
+    {% if notas %}
+    <div class="card">
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Usuario</th>
+                        <th>Fecha Creación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for nota in notas %}
+                    <tr>
+                        <td data-label="ID">{{ nota.id }}</td>
+                        <td data-label="Título"><strong>{{ nota.titulo }}</strong></td>
+                        <td data-label="Usuario">{{ nota.usuario_nombre }}</td>
+                        <td data-label="Fecha">
+                            {{ nota.fecha_creacion_formateada }}
+                        </td>
+                        <td data-label="Acciones" style="display: flex; gap: var(--spacing-md); justify-content: flex-end;">
+                            <a href="{{ url_for('nota.ver_nota', nota_id=nota.id) }}" class="btn btn-secondary btn-sm">
+                                Ver
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div style="margin-top: var(--spacing-lg); text-align: center; color: var(--text-light);">
+        Total de notas: <strong>{{ notas|length }}</strong>
+    </div>
+    {% else %}
+    <div class="card">
+        <div class="card-body text-center">
+            <p class="text-muted" style="font-size: 1.1rem; padding: var(--spacing-2xl) 0;">
+                No hay notas registradas
+            </p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

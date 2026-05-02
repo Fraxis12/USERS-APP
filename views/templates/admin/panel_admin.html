@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Panel de Administración{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: var(--spacing-xl) 0;">
+    <div class="flex-between mb-lg">
+        <div>
+            <h1>Panel de Administración</h1>
+            <p class="text-muted">Gestión de usuarios</p>
+        </div>
+        <a href="{{ url_for('usuario.crear_usuario') }}" class="btn btn-success">
+            + Nuevo Usuario
+        </a>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Usuarios Registrados</h3>
+        </div>
+        
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if usuarios %}
+                        {% for usuario in usuarios %}
+                        <tr>
+                            <td data-label="ID">{{ usuario.id }}</td>
+                            <td data-label="Nombre">{{ usuario.nombre }}</td>
+                            <td data-label="Usuario"><strong>{{ usuario.usuario }}</strong></td>
+                            <td data-label="Email">{{ usuario.email }}</td>
+                            <td data-label="Rol">
+                                {% if usuario.rol == 'admin' %}
+                                    <span class="badge badge-admin">Admin</span>
+                                {% else %}
+                                    <span class="badge badge-user">Usuario</span>
+                                {% endif %}
+                            </td>
+                            <td data-label="Acciones" style="display: flex; gap: var(--spacing-md); justify-content: flex-end;">
+                                {% if usuario.id != usuario_actual_id %}
+                                    <a href="{{ url_for('usuario.editar_usuario', usuario_id=usuario.id) }}" class="btn btn-secondary btn-sm">
+                                        Editar
+                                    </a>
+                                    <button 
+                                        class="btn btn-danger btn-sm"
+                                        onclick="if(confirmarEliminacion('¿Eliminar a {{ usuario.nombre }}?')) { 
+                                            fetch('{{ url_for('usuario.eliminar_usuario', usuario_id=usuario.id) }}', { method: 'POST' })
+                                            .then(r => r.json())
+                                            .then(d => { 
+                                                if(d.exito) location.reload(); 
+                                                else mostrarAlerta(d.mensaje, 'danger'); 
+                                            });
+                                        }"
+                                    >
+                                        Eliminar
+                                    </button>
+                                {% else %}
+                                    <span class="text-muted text-sm">Tu cuenta</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">
+                            No hay usuarios registrados
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div style="margin-top: var(--spacing-lg); text-align: center; color: var(--text-light);">
+        Total de usuarios: <strong>{{ usuarios|length }}</strong>
+    </div>
+</div>
+{% endblock %}

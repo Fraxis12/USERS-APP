@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Usuario{% endblock %}
+
+{% block content %}
+<div class="container-md" style="padding: var(--spacing-xl) 0;">
+    <div class="mb-lg">
+        <a href="{{ url_for('usuario.panel_admin') }}" style="color: var(--primary-color);">← Panel Admin</a>
+        <h1>Editar Usuario</h1>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            {% if errores %}
+            <div class="alert alert-danger">
+                <strong>Errores:</strong>
+                <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
+                    {% for error in errores %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+            </div>
+            {% endif %}
+            
+            <form method="POST" action="{{ url_for('usuario.editar_usuario', usuario_id=usuario.id) }}">
+                <div class="form-group">
+                    <label for="nombre">Nombre Completo</label>
+                    <input 
+                        type="text" 
+                        id="nombre" 
+                        name="nombre" 
+                        value="{{ usuario.nombre }}"
+                        required
+                        autofocus
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        value="{{ usuario.email }}"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="usuario">Usuario</label>
+                    <input 
+                        type="text" 
+                        id="usuario" 
+                        name="usuario" 
+                        value="{{ usuario.usuario }}"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="contraseña">Nueva Contraseña</label>
+                    <input 
+                        type="password" 
+                        id="contraseña" 
+                        name="contraseña" 
+                        placeholder="Déjalo vacío para mantener la contraseña actual"
+                    >
+                    <span class="form-text">Opcional. Mínimo 6 caracteres</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="rol">Rol</label>
+                    <select id="rol" name="rol" required>
+                        <option value="usuario" {% if usuario.rol == 'usuario' %}selected{% endif %}>Usuario Regular</option>
+                        <option value="admin" {% if usuario.rol == 'admin' %}selected{% endif %}>Administrador</option>
+                    </select>
+                </div>
+                
+                <div class="flex gap-md" style="margin-top: var(--spacing-xl);">
+                    <button type="submit" class="btn btn-primary">
+                        Guardar Cambios
+                    </button>
+                    <a href="{{ url_for('usuario.panel_admin') }}" class="btn btn-secondary">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
